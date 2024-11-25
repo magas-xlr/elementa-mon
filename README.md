@@ -6,6 +6,12 @@
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
+## Environment 
+
+- Angular CLI Version: 18.2.0
+- Angular Core Version: 18.2.0
+- Node Version: 22.11.0
+
 ## Finish your CI setup
 
 [Click here to finish setting up your workspace!](https://cloud.nx.app/connect/uCYFMZwqa9)
