@@ -1,8 +1,8 @@
 export default {
   displayName: 'avatar',
-  preset: '../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/avatar',
+  coverageDirectory: '../../../coverage/apps/frontend/avatar',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

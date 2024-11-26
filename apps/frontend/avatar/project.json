@@ -3,27 +3,30 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "avatar/src",
+  "sourceRoot": "apps/frontend/avatar/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/avatar/browser",
-        "index": "avatar/src/index.html",
-        "main": "avatar/src/main.ts",
+        "outputPath": "dist/apps/frontend/avatar",
+        "index": "apps/frontend/avatar/src/index.html",
+        "main": "apps/frontend/avatar/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "avatar/tsconfig.app.json",
+        "tsConfig": "apps/frontend/avatar/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "avatar/public"
+            "input": "apps/frontend/avatar/public"
           }
         ],
-        "styles": ["avatar/src/styles.scss"],
-        "scripts": []
+        "styles": ["apps/frontend/avatar/src/styles.scss"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/frontend/avatar/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -39,7 +42,10 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/frontend/avatar/webpack.prod.config.ts"
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -53,7 +59,11 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4201,
+        "publicHost": "http://localhost:4201"
+      },
       "configurations": {
         "production": {
           "buildTarget": "avatar:build:production"
@@ -77,70 +87,25 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "avatar/jest.config.ts"
+        "jestConfig": "apps/frontend/avatar/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
       "options": {
         "buildTarget": "avatar:build",
-        "port": 4200,
-        "spa": true
+        "port": 4201,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "avatar:build:development"
+        },
+        "production": {
+          "buildTarget": "avatar:build:production"
+        }
       }
-    },
-    "server": {
-      "dependsOn": ["build"],
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/avatar/server",
-        "main": "avatar/server.ts",
-        "tsConfig": "avatar/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
-        }
-      },
-      "defaultConfiguration": "production"
-    },
-    "serve-ssr": {
-      "executor": "@angular-devkit/build-angular:ssr-dev-server",
-      "configurations": {
-        "development": {
-          "browserTarget": "avatar:build:development",
-          "serverTarget": "avatar:server:development"
-        },
-        "production": {
-          "browserTarget": "avatar:build:production",
-          "serverTarget": "avatar:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@angular-devkit/build-angular:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "avatar:build:development",
-          "serverTarget": "avatar:server:development"
-        },
-        "production": {
-          "browserTarget": "avatar:build:production",
-          "serverTarget": "avatar:server:production"
-        }
-      },
-      "defaultConfiguration": "production"
     }
   }
 }

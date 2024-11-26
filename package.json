@@ -2,7 +2,10 @@
   "name": "@elementa-mon/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "all:static": "npx nx serve host",
+    "all:remotes": "npx nx serve host --devRemotes=avatar"
+  },
   "private": true,
   "dependencies": {
     "@angular-architects/module-federation": "^18.0.6",
