@@ -1,6 +1,6 @@
 {
   "name": "elementa-mon",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/elementa-mon/src",

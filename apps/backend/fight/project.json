@@ -1,6 +1,6 @@
 {
   "name": "fight",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fight/src",
   "projectType": "application",
   "tags": [],

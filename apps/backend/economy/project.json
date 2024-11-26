@@ -1,6 +1,6 @@
 {
   "name": "economy",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/economy/src",
   "projectType": "application",
   "tags": [],

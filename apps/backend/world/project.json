@@ -1,6 +1,6 @@
 {
   "name": "world",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/world/src",
   "projectType": "application",
   "tags": [],

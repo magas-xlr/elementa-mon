@@ -1,6 +1,6 @@
 {
   "name": "battle-e2e",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "battle-e2e/src",
   "tags": [],
