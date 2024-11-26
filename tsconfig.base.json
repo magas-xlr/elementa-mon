@@ -17,6 +17,9 @@
     "paths": {
       "avatar/Routes": [
         "apps/frontend/avatar/src/app/remote-entry/entry.routes.ts"
+      ],
+      "battle/Routes": [
+        "apps/frontend/battle/src/app/remote-entry/entry.routes.ts"
       ]
     }
   },

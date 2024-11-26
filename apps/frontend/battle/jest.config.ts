@@ -1,8 +1,8 @@
 export default {
   displayName: 'battle',
-  preset: '../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/battle',
+  coverageDirectory: '../../../coverage/apps/frontend/battle',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

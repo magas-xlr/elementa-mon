@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "all:static": "npx nx serve host",
-    "all:remotes": "npx nx serve host --devRemotes=avatar"
+    "all:remotes": "npx nx run host:serve --devRemotes=avatar,battle --watch=true"
   },
   "private": true,
   "dependencies": {
