@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "all:static": "npx nx serve host",
-    "all:remotes": "npx nx run host:serve --devRemotes=avatar,battle --watch=true"
+    "all:static": "npx nx serve host"
   },
   "private": true,
   "dependencies": {
