@@ -13,6 +13,6 @@ export default defineConfig({
       ciWebServerCommand: 'npx nx run deck:serve-static',
       ciBaseUrl: 'http://localhost:4200',
     }),
-    baseUrl: 'http://localhost:4200',
+    baseUrl: 'http://localhost:4203',
   },
 });

@@ -3,27 +3,30 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "deck/src",
+  "sourceRoot": "apps/frontend/deck/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/deck/browser",
-        "index": "deck/src/index.html",
-        "main": "deck/src/main.ts",
+        "outputPath": "dist/apps/frontend/deck",
+        "index": "apps/frontend/deck/src/index.html",
+        "main": "apps/frontend/deck/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "deck/tsconfig.app.json",
+        "tsConfig": "apps/frontend/deck/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "deck/public"
+            "input": "apps/frontend/deck/public"
           }
         ],
-        "styles": ["deck/src/styles.scss"],
-        "scripts": []
+        "styles": ["apps/frontend/deck/src/styles.scss"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/frontend/deck/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -39,7 +42,10 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/frontend/deck/webpack.prod.config.ts"
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -53,7 +59,11 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4203,
+        "publicHost": "http://localhost:4203"
+      },
       "configurations": {
         "production": {
           "buildTarget": "deck:build:production"
@@ -77,70 +87,25 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "deck/jest.config.ts"
+        "jestConfig": "apps/frontend/deck/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
       "options": {
         "buildTarget": "deck:build",
-        "port": 4200,
-        "spa": true
+        "port": 4203,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "deck:build:development"
+        },
+        "production": {
+          "buildTarget": "deck:build:production"
+        }
       }
-    },
-    "server": {
-      "dependsOn": ["build"],
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/deck/server",
-        "main": "deck/server.ts",
-        "tsConfig": "deck/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
-        }
-      },
-      "defaultConfiguration": "production"
-    },
-    "serve-ssr": {
-      "executor": "@angular-devkit/build-angular:ssr-dev-server",
-      "configurations": {
-        "development": {
-          "browserTarget": "deck:build:development",
-          "serverTarget": "deck:server:development"
-        },
-        "production": {
-          "browserTarget": "deck:build:production",
-          "serverTarget": "deck:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@angular-devkit/build-angular:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "deck:build:development",
-          "serverTarget": "deck:server:development"
-        },
-        "production": {
-          "browserTarget": "deck:build:production",
-          "serverTarget": "deck:server:production"
-        }
-      },
-      "defaultConfiguration": "production"
     }
   }
 }

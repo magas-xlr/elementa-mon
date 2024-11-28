@@ -1,8 +1,8 @@
 export default {
   displayName: 'deck',
-  preset: '../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/deck',
+  coverageDirectory: '../../../coverage/apps/frontend/deck',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
