@@ -1,8 +1,8 @@
 export default {
   displayName: 'inventory',
-  preset: '../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/inventory',
+  coverageDirectory: '../../../coverage/apps/frontend/inventory',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
