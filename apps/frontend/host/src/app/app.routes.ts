@@ -1,21 +1,29 @@
 import { Route } from '@angular/router';
-import { loadRemoteModule } from '@angular-architects/module-federation';
+import { loadRemote } from '@module-federation/enhanced/runtime';
 
 export const appRoutes: Route[] = [
   {
     path: 'avatar',
     loadChildren: () =>
-      loadRemoteModule('avatar', './Routes').then((m) => m.remoteRoutes),
+      loadRemote<typeof import('avatar/Routes')>('avatar/Routes').then(
+        (m) => m!.remoteRoutes
+      ),
   },
   {
     path: 'battle',
     loadChildren: () =>
-      loadRemoteModule('battle', './Routes').then((m) => m.remoteRoutes),
+      loadRemote<typeof import('battle/Routes')>('battle/Routes').then((m) => m!.remoteRoutes),
   },
   {
     path: 'deck',
     loadChildren: () =>
-      loadRemoteModule('deck', './Routes').then((m) => m.remoteRoutes),
+      loadRemote<typeof import('deck/Routes')>('deck/Routes').then((m) => m!.remoteRoutes),
   },
-
+  {
+    path: 'game-over',
+    loadChildren: () =>
+      loadRemote<typeof import('gameOver/Routes')>('gameOver/Routes').then(
+        (m) => m!.remoteRoutes
+      ),
+  },
 ];
