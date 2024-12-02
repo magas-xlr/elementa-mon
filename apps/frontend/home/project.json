@@ -3,27 +3,30 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "home/src",
+  "sourceRoot": "apps/frontend/home/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/home/browser",
-        "index": "home/src/index.html",
-        "main": "home/src/main.ts",
+        "outputPath": "dist/apps/frontend/home",
+        "index": "apps/frontend/home/src/index.html",
+        "main": "apps/frontend/home/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "home/tsconfig.app.json",
+        "tsConfig": "apps/frontend/home/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "home/public"
+            "input": "apps/frontend/home/public"
           }
         ],
-        "styles": ["home/src/styles.scss"],
-        "scripts": []
+        "styles": ["apps/frontend/home/src/styles.scss"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/frontend/home/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -39,7 +42,10 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/frontend/home/webpack.prod.config.ts"
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -53,7 +59,11 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4205,
+        "publicHost": "http://localhost:4205"
+      },
       "configurations": {
         "production": {
           "buildTarget": "home:build:production"
@@ -77,70 +87,25 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "home/jest.config.ts"
+        "jestConfig": "apps/frontend/home/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
       "options": {
         "buildTarget": "home:build",
-        "port": 4200,
-        "spa": true
+        "port": 4205,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "home:build:development"
+        },
+        "production": {
+          "buildTarget": "home:build:production"
+        }
       }
-    },
-    "server": {
-      "dependsOn": ["build"],
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/home/server",
-        "main": "home/server.ts",
-        "tsConfig": "home/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
-        }
-      },
-      "defaultConfiguration": "production"
-    },
-    "serve-ssr": {
-      "executor": "@angular-devkit/build-angular:ssr-dev-server",
-      "configurations": {
-        "development": {
-          "browserTarget": "home:build:development",
-          "serverTarget": "home:server:development"
-        },
-        "production": {
-          "browserTarget": "home:build:production",
-          "serverTarget": "home:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@angular-devkit/build-angular:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "home:build:development",
-          "serverTarget": "home:server:development"
-        },
-        "production": {
-          "browserTarget": "home:build:production",
-          "serverTarget": "home:server:production"
-        }
-      },
-      "defaultConfiguration": "production"
     }
   }
 }

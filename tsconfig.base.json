@@ -26,7 +26,8 @@
       ],
       "gameOver/Routes": [
         "apps/frontend/game-over/src/app/remote-entry/entry.routes.ts"
-      ]
+      ],
+      "home/Routes": ["apps/frontend/home/src/app/remote-entry/entry.routes.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
