@@ -1,6 +1,7 @@
 {
-  "avatar": "http://localhost:4201/mf-manifest.json",
-  "battle": "http://localhost:4202/mf-manifest.json",
-  "deck": "http://localhost:4203/mf-manifest.json",
-  "gameOver": "http://localhost:4204/mf-manifest.json"
+  "avatar": "http://localhost:4201/remoteEntry.mjs",
+  "battle": "http://localhost:4202/remoteEntry.mjs",
+  "deck": "http://localhost:4203/remoteEntry.mjs",
+  "gameOver": "http://localhost:4204/remoteEntry.mjs",
+  "home": "http://localhost:4205/remoteEntry.mjs"
 }
