@@ -3,27 +3,30 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "map/src",
+  "sourceRoot": "apps/frontend/map/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/map/browser",
-        "index": "map/src/index.html",
-        "main": "map/src/main.ts",
+        "outputPath": "dist/apps/frontend/map",
+        "index": "apps/frontend/map/src/index.html",
+        "main": "apps/frontend/map/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "map/tsconfig.app.json",
+        "tsConfig": "apps/frontend/map/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "map/public"
+            "input": "apps/frontend/map/public"
           }
         ],
-        "styles": ["map/src/styles.scss"],
-        "scripts": []
+        "styles": ["apps/frontend/map/src/styles.scss"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/frontend/map/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -39,7 +42,10 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/frontend/map/webpack.prod.config.ts"
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -53,7 +59,11 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4207,
+        "publicHost": "http://localhost:4207"
+      },
       "configurations": {
         "production": {
           "buildTarget": "map:build:production"
@@ -77,70 +87,25 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "map/jest.config.ts"
+        "jestConfig": "apps/frontend/map/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
       "options": {
         "buildTarget": "map:build",
-        "port": 4200,
-        "spa": true
+        "port": 4207,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "map:build:development"
+        },
+        "production": {
+          "buildTarget": "map:build:production"
+        }
       }
-    },
-    "server": {
-      "dependsOn": ["build"],
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/map/server",
-        "main": "map/server.ts",
-        "tsConfig": "map/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
-        }
-      },
-      "defaultConfiguration": "production"
-    },
-    "serve-ssr": {
-      "executor": "@angular-devkit/build-angular:ssr-dev-server",
-      "configurations": {
-        "development": {
-          "browserTarget": "map:build:development",
-          "serverTarget": "map:server:development"
-        },
-        "production": {
-          "browserTarget": "map:build:production",
-          "serverTarget": "map:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@angular-devkit/build-angular:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "map:build:development",
-          "serverTarget": "map:server:development"
-        },
-        "production": {
-          "browserTarget": "map:build:production",
-          "serverTarget": "map:server:production"
-        }
-      },
-      "defaultConfiguration": "production"
     }
   }
 }

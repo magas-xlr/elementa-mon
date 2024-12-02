@@ -32,7 +32,8 @@
       ],
       "inventory/Routes": [
         "apps/frontend/inventory/src/app/remote-entry/entry.routes.ts"
-      ]
+      ],
+      "map/Routes": ["apps/frontend/map/src/app/remote-entry/entry.routes.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -4,5 +4,7 @@
   "deck": "http://localhost:4203/remoteEntry.mjs",
   "gameOver": "http://localhost:4204/remoteEntry.mjs",
   "home": "http://localhost:4205/remoteEntry.mjs",
-  "inventory": "http://localhost:4206/remoteEntry.mjs"
+  "inventory": "http://localhost:4206/remoteEntry.mjs",
+  "map": "http://localhost:4207/remoteEntry.mjs"
+
 }

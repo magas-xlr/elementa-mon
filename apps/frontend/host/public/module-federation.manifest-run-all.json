@@ -4,6 +4,6 @@
   "deck": "http://localhost:4203/mf-manifest.json",
   "gameOver": "http://localhost:4204/mf-manifest.json",
   "home": "http://localhost:4205/mf-manifest.json",
-  "inventory": "http://localhost:4206/mf-manifest.json"
-
+  "inventory": "http://localhost:4206/mf-manifest.json",
+  "map": "http://localhost:4207/mf-manifest.json"
 }

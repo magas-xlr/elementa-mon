@@ -1,8 +1,8 @@
 export default {
   displayName: 'map',
-  preset: '../jest.preset.js',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/map',
+  coverageDirectory: '../../../coverage/apps/frontend/map',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

@@ -1,5 +1,6 @@
 import { loadRemoteModule } from '@angular-architects/module-federation';
 import { Route } from '@angular/router';
+import { loadRemote } from '@module-federation/enhanced/runtime';
 // import { loadRemote } from '@module-federation/enhanced/runtime';
 
 export const appRoutes: Route[] = [
@@ -32,7 +33,12 @@ export const appRoutes: Route[] = [
     path: 'inventory',
     loadChildren: () =>
       loadRemoteModule('inventory', './Routes').then((m) => m!.remoteRoutes),
+  },
 
+  {
+    path: 'map',
+    loadChildren: () =>
+      loadRemoteModule('map', './Routes').then((m) => m!.remoteRoutes),
   },
 
   // {
@@ -70,4 +76,18 @@ export const appRoutes: Route[] = [
   //       (m) => m!.remoteRoutes
   //     ),
   // },
+  //   {
+//     path: 'inventory',
+//     loadChildren: () =>
+//       loadRemote<typeof import('inventory/Routes')>('map/Routes').then(
+//         (m) => m!.remoteRoutes
+//       ),
+//   },
+//   {
+//     path: 'map',
+//     loadChildren: () =>
+//       loadRemote<typeof import('map/Routes')>('map/Routes').then(
+//         (m) => m!.remoteRoutes
+//       ),
+//   },
 ];
