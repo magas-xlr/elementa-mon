@@ -2,9 +2,12 @@
   "name": "@elementa-mon/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "all:static": "npx nx serve host"
+  },
   "private": true,
   "dependencies": {
+    "@angular-architects/module-federation": "^18.0.6",
     "@angular/animations": "~18.2.0",
     "@angular/common": "~18.2.0",
     "@angular/compiler": "~18.2.0",
@@ -30,7 +33,8 @@
     "react-dom": "18.3.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~7.8.0",
-    "zone.js": "~0.14.3"
+    "zone.js": "~0.14.3",
+    "@nx/angular": "20.1.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.2.0",
@@ -41,11 +45,11 @@
     "@angular/language-service": "~18.2.0",
     "@electron-forge/cli": "^7.5.0",
     "@eslint/js": "^9.8.0",
+    "@module-federation/enhanced": "0.6.9",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@nrwl/angular": "^19.8.4",
     "@nrwl/node": "^19.8.4",
-    "@nx/angular": "20.1.2",
     "@nx/cypress": "20.1.2",
     "@nx/devkit": "20.1.2",
     "@nx/esbuild": "20.1.2",
