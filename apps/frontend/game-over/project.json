@@ -1,29 +1,32 @@
 {
-  "name": "game-over",
+  "name": "gameOver",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "game-over/src",
+  "sourceRoot": "apps/frontend/game-over/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/game-over/browser",
-        "index": "game-over/src/index.html",
-        "main": "game-over/src/main.ts",
+        "outputPath": "dist/apps/frontend/game-over",
+        "index": "apps/frontend/game-over/src/index.html",
+        "main": "apps/frontend/game-over/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "game-over/tsconfig.app.json",
+        "tsConfig": "apps/frontend/game-over/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "game-over/public"
+            "input": "apps/frontend/game-over/public"
           }
         ],
-        "styles": ["game-over/src/styles.scss"],
-        "scripts": []
+        "styles": ["apps/frontend/game-over/src/styles.scss"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/frontend/game-over/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -39,7 +42,10 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/frontend/game-over/webpack.prod.config.ts"
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -53,13 +59,17 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4204,
+        "publicHost": "http://localhost:4204"
+      },
       "configurations": {
         "production": {
-          "buildTarget": "game-over:build:production"
+          "buildTarget": "gameOver:build:production"
         },
         "development": {
-          "buildTarget": "game-over:build:development"
+          "buildTarget": "gameOver:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -67,7 +77,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "game-over:build"
+        "buildTarget": "gameOver:build"
       }
     },
     "lint": {
@@ -77,70 +87,25 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "game-over/jest.config.ts"
+        "jestConfig": "apps/frontend/game-over/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
+      "defaultConfiguration": "production",
       "options": {
-        "buildTarget": "game-over:build",
-        "port": 4200,
-        "spa": true
+        "buildTarget": "gameOver:build",
+        "port": 4204,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "gameOver:build:development"
+        },
+        "production": {
+          "buildTarget": "gameOver:build:production"
+        }
       }
-    },
-    "server": {
-      "dependsOn": ["build"],
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/game-over/server",
-        "main": "game-over/server.ts",
-        "tsConfig": "game-over/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "outputHashing": "media"
-        },
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true
-        }
-      },
-      "defaultConfiguration": "production"
-    },
-    "serve-ssr": {
-      "executor": "@angular-devkit/build-angular:ssr-dev-server",
-      "configurations": {
-        "development": {
-          "browserTarget": "game-over:build:development",
-          "serverTarget": "game-over:server:development"
-        },
-        "production": {
-          "browserTarget": "game-over:build:production",
-          "serverTarget": "game-over:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@angular-devkit/build-angular:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "game-over:build:development",
-          "serverTarget": "game-over:server:development"
-        },
-        "production": {
-          "browserTarget": "game-over:build:production",
-          "serverTarget": "game-over:server:production"
-        }
-      },
-      "defaultConfiguration": "production"
     }
   }
 }

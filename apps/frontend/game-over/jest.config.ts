@@ -1,8 +1,8 @@
 export default {
-  displayName: 'game-over',
-  preset: '../jest.preset.js',
+  displayName: 'gameOver',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../coverage/game-over',
+  coverageDirectory: '../../../coverage/apps/frontend/game-over',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

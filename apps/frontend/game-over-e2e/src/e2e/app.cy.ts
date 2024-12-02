@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('game-over-e2e', () => {
+describe('gameOver-e2e', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {

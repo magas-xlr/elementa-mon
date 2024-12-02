@@ -7,12 +7,12 @@ export default defineConfig({
     ...nxE2EPreset(__filename, {
       cypressDir: 'src',
       webServerCommands: {
-        default: 'npx nx run game-over:serve',
-        production: 'npx nx run game-over:serve-static',
+        default: 'npx nx run gameOver:serve',
+        production: 'npx nx run gameOver:serve-static',
       },
-      ciWebServerCommand: 'npx nx run game-over:serve-static',
+      ciWebServerCommand: 'npx nx run gameOver:serve-static',
       ciBaseUrl: 'http://localhost:4200',
     }),
-    baseUrl: 'http://localhost:4200',
+    baseUrl: 'http://localhost:4204',
   },
 });
