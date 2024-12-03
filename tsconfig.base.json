@@ -14,7 +14,27 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "avatar/Routes": [
+        "apps/frontend/avatar/src/app/remote-entry/entry.routes.ts"
+      ],
+      "battle/Routes": [
+        "apps/frontend/battle/src/app/remote-entry/entry.routes.ts"
+      ],
+      "deck/Routes": [
+        "apps/frontend/deck/src/app/remote-entry/entry.routes.ts"
+      ],
+      "gameOver/Routes": [
+        "apps/frontend/game-over/src/app/remote-entry/entry.routes.ts"
+      ],
+      "home/Routes": [
+        "apps/frontend/home/src/app/remote-entry/entry.routes.ts"
+      ],
+      "inventory/Routes": [
+        "apps/frontend/inventory/src/app/remote-entry/entry.routes.ts"
+      ],
+      "map/Routes": ["apps/frontend/map/src/app/remote-entry/entry.routes.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
