@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+.nx/
+out/
+build/
+coverage/
+
+# Testing
+*.spec.ts
+*.test.ts
+__tests__/
+e2e/
+
+# Development files
+.git/
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Storybook
+storybook-static/
+.storybook/
+
+# Misc
+.eslintcache
+.prettierignore
+.editorconfig
