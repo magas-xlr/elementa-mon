@@ -97,11 +97,17 @@ elementa-mon/
 
 ## 🔨 In Progress
 
-### 🚀 Running Services
+### Running Applications
 
-- ✅ **Shell App** - Running at http://localhost:4200/
-- ⏳ **Databases** - Docker services (to be started)
-- ⏳ **Microservices** - Backend services (to be generated)
+- ✅ Shell application running at http://localhost:4200/
+
+### Databases
+
+- ✅ **PostgreSQL 16** - Running on port 5432 (elementamon_db)
+- ✅ **MongoDB 7** - Running on port 27017 (elementamon database)
+- ✅ **Redis 7** - Running on port 6379 (cache and sessions)
+- ✅ Docker Compose network: elementamon-network
+- ✅ Persistent volumes configured for all databases
 
 ---
 
