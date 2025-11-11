@@ -55,6 +55,11 @@
     },
     "e2e-ci--**/**": {
       "dependsOn": ["^build"]
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "generators": {
@@ -89,7 +94,17 @@
       "plugin": "@nx/jest/plugin",
       "options": {
         "targetName": "test"
-      }
+      },
+      "exclude": [
+        "services/auth-e2e/**/*",
+        "services/fight-e2e/**/*",
+        "services/character-e2e/**/*",
+        "services/cards-service-e2e/**/*",
+        "services/world-service-e2e/**/*",
+        "services/economy-e2e/**/*",
+        "services/skins-e2e/**/*",
+        "services/ai-e2e/**/*"
+      ]
     },
     {
       "plugin": "@nx/playwright/plugin",
