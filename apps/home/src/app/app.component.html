@@ -1,2 +1,114 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<div class="home-page">
+  <h1 class="page-title">🎮 Welcome to {{ title }}!</h1>
+  <p class="page-subtitle">
+    Explore the world of ElementaMon - Collect, Build, and Battle with your favorite creatures!
+  </p>
+
+  <!-- Button Showcase -->
+  <section class="component-section">
+    <h2>Button Components</h2>
+    <div class="button-grid">
+      <elem-button variant="primary" (clicked)="handleButtonClick()"> Primary Button </elem-button>
+      <elem-button variant="secondary">Secondary Button</elem-button>
+      <elem-button variant="success" icon="✓">Success Button</elem-button>
+      <elem-button variant="danger" icon="⚠">Danger Button</elem-button>
+      <elem-button variant="warning">Warning Button</elem-button>
+      <elem-button variant="ghost">Ghost Button</elem-button>
+    </div>
+
+    <h3>Button Sizes</h3>
+    <div class="button-grid">
+      <elem-button size="sm">Small</elem-button>
+      <elem-button size="md">Medium</elem-button>
+      <elem-button size="lg">Large</elem-button>
+    </div>
+
+    <h3>Button States</h3>
+    <div class="button-grid">
+      <elem-button [disabled]="true">Disabled</elem-button>
+      <elem-button [loading]="true">Loading...</elem-button>
+      <elem-button [fullWidth]="true">Full Width</elem-button>
+    </div>
+  </section>
+
+  <!-- Card Showcase -->
+  <section class="component-section">
+    <h2>Card Components</h2>
+    <div class="card-grid">
+      <lib-card variant="default">
+        <div card-header>
+          <h3>Default Card</h3>
+        </div>
+        <p>This is a default card with subtle shadow.</p>
+        <div card-footer>
+          <elem-button size="sm">Action</elem-button>
+        </div>
+      </lib-card>
+
+      <lib-card variant="elevated">
+        <div card-header>
+          <h3>Elevated Card</h3>
+        </div>
+        <p>This card has more prominent shadow.</p>
+      </lib-card>
+
+      <lib-card variant="outlined">
+        <div card-header>
+          <h3>Outlined Card</h3>
+        </div>
+        <p>This card has a border instead of shadow.</p>
+      </lib-card>
+
+      <lib-card variant="glass" [hoverable]="true">
+        <div card-header>
+          <h3>Glass Card</h3>
+        </div>
+        <p>Glassmorphism effect with backdrop blur. Hover me!</p>
+      </lib-card>
+    </div>
+  </section>
+
+  <!-- Input Showcase -->
+  <section class="component-section">
+    <h2>Input Components</h2>
+    <div class="input-grid">
+      <lib-input
+        label="Player Name"
+        placeholder="Enter your name"
+        helperText="Choose a unique name for your character"
+        [(value)]="playerName"
+        [required]="true"
+      ></lib-input>
+
+      <lib-input label="Email" type="email" placeholder="your@email.com" icon="📧"></lib-input>
+
+      <lib-input label="Password" type="password" placeholder="••••••••" icon="🔒"></lib-input>
+
+      <lib-input label="With Error" error="This field is required" placeholder="Invalid input"></lib-input>
+    </div>
+
+    <div class="input-sizes">
+      <lib-input size="sm" placeholder="Small input"></lib-input>
+      <lib-input size="md" placeholder="Medium input"></lib-input>
+      <lib-input size="lg" placeholder="Large input"></lib-input>
+    </div>
+  </section>
+
+  <!-- Modal Showcase -->
+  <section class="component-section">
+    <h2>Modal Component</h2>
+    <elem-button (clicked)="openModal()" icon="🔥"> Open Modal </elem-button>
+
+    <lib-modal [isOpen]="isModalOpen()" title="Welcome to ElementaMon!" size="md" (closed)="closeModal()">
+      <p>Start your adventure by choosing your first ElementaMon companion!</p>
+      <p>Collect powerful creatures, build the ultimate deck, and battle your way to become a champion.</p>
+
+      <div modal-footer>
+        <elem-button variant="ghost" (clicked)="closeModal()"> Cancel </elem-button>
+        <elem-button variant="primary" (clicked)="closeModal()"> Start Adventure </elem-button>
+      </div>
+    </lib-modal>
+  </section>
+
+  <router-outlet></router-outlet>
+</div>
