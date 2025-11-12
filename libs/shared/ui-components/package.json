@@ -1,5 +1,5 @@
 {
-  "name": "ui-components",
+  "name": "@elementamon/shared-ui-components",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^20.0.0",

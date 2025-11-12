@@ -29,7 +29,7 @@
       "@elementamon/game/state": ["libs/game/state/src/index.ts"],
       "@elementamon/shared/data-access": ["libs/shared/data-access/src/index.ts"],
       "@elementamon/shared/models": ["libs/shared/models/src/index.ts"],
-      "@elementamon/shared/ui-components": ["libs/shared/ui-components/src/index.ts"],
+      "@elementamon/shared-ui-components": ["dist/libs/shared/ui-components"],
       "@elementamon/shared/utils": ["libs/shared/utils/src/index.ts"],
       "battle-logic": ["libs/game/battle-logic/src/index.ts"],
       "cards": ["libs/game/cards/src/index.ts"],
