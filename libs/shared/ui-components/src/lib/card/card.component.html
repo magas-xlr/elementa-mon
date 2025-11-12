@@ -1,0 +1,17 @@
+<div
+  [class]="'elem-card elem-card-' + variant()"
+  [class.elem-card-hoverable]="hoverable()"
+  [class.elem-card-no-padding]="!padding()"
+>
+  <div class="elem-card-header" *ngIf="hasHeaderContent">
+    <ng-content select="[card-header]"></ng-content>
+  </div>
+
+  <div class="elem-card-body">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="elem-card-footer" *ngIf="hasFooterContent">
+    <ng-content select="[card-footer]"></ng-content>
+  </div>
+</div>

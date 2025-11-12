@@ -1,0 +1,135 @@
+// Input Wrapper
+.elem-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+// Label
+.elem-input-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  display: block;
+}
+
+.elem-input-required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+// Input Container
+.elem-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &.elem-input-error {
+    border-color: #ef4444;
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  &.elem-input-disabled {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Input Sizes
+.elem-input-sm {
+  padding: 0.5rem 0.75rem;
+
+  .elem-input-field {
+    font-size: 0.875rem;
+  }
+}
+
+.elem-input-md {
+  padding: 0.75rem 1rem;
+
+  .elem-input-field {
+    font-size: 1rem;
+  }
+}
+
+.elem-input-lg {
+  padding: 1rem 1.25rem;
+
+  .elem-input-field {
+    font-size: 1.125rem;
+  }
+}
+
+// Input Icon
+.elem-input-icon {
+  font-size: 1.2em;
+  color: #6b7280;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+// Input Field
+.elem-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1f2937;
+  font-family: inherit;
+  min-width: 0;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Remove number input spinners
+  &[type='number'] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+// Helper Text
+.elem-input-helper {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+// Error Text
+.elem-input-error-text {
+  font-size: 0.875rem;
+  color: #ef4444;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &::before {
+    content: '⚠';
+  }
+}

@@ -1,0 +1,157 @@
+// Modal Backdrop
+.elem-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Modal Content
+.elem-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  animation: slideIn 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Modal Sizes
+.elem-modal-sm {
+  width: 100%;
+  max-width: 400px;
+}
+
+.elem-modal-md {
+  width: 100%;
+  max-width: 600px;
+}
+
+.elem-modal-lg {
+  width: 100%;
+  max-width: 800px;
+}
+
+.elem-modal-xl {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.elem-modal-full {
+  width: 100%;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+// Modal Header
+.elem-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+}
+
+.elem-modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.elem-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #718096;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a202c;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+  }
+}
+
+// Modal Body
+.elem-modal-body {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+// Modal Footer
+.elem-modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  &:empty {
+    display: none;
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 640px) {
+  .elem-modal-backdrop {
+    padding: 0;
+  }
+
+  .elem-modal-content {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .elem-modal-sm,
+  .elem-modal-md,
+  .elem-modal-lg,
+  .elem-modal-xl,
+  .elem-modal-full {
+    max-width: 100vw;
+    width: 100%;
+  }
+}

@@ -1,0 +1,21 @@
+<div class="elem-modal-backdrop" *ngIf="isOpen()" (click)="handleBackdropClick()">
+  <div [class]="'elem-modal-content elem-modal-' + size()" (click)="handleContentClick($event)">
+    <!-- Modal Header -->
+    <div class="elem-modal-header" *ngIf="title() || showCloseButton()">
+      <h2 class="elem-modal-title" *ngIf="title()">{{ title() }}</h2>
+      <button *ngIf="showCloseButton()" class="elem-modal-close" (click)="handleClose()" aria-label="Close modal">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="elem-modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="elem-modal-footer">
+      <ng-content select="[modal-footer]"></ng-content>
+    </div>
+  </div>
+</div>

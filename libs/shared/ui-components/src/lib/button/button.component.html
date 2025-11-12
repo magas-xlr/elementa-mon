@@ -1,0 +1,14 @@
+<button
+  type="button"
+  [class]="'elem-btn elem-btn-' + variant() + ' elem-btn-' + size()"
+  [class.elem-btn-full]="fullWidth()"
+  [class.elem-btn-loading]="loading()"
+  [disabled]="disabled() || loading()"
+  (click)="handleClick($event)"
+>
+  <span *ngIf="loading()" class="elem-btn-spinner">⏳</span>
+  <span *ngIf="icon() && !loading()" class="elem-btn-icon">{{ icon() }}</span>
+  <span class="elem-btn-content">
+    <ng-content></ng-content>
+  </span>
+</button>

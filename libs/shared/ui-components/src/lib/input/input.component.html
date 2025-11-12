@@ -1,0 +1,38 @@
+<div class="elem-input-wrapper">
+  <!-- Label -->
+  <label *ngIf="label()" class="elem-input-label">
+    {{ label() }}
+    <span *ngIf="required()" class="elem-input-required">*</span>
+  </label>
+
+  <!-- Input Container -->
+  <div
+    [class]="'elem-input-container elem-input-' + size()"
+    [class.elem-input-error]="error()"
+    [class.elem-input-disabled]="disabled()"
+  >
+    <span *ngIf="icon()" class="elem-input-icon">{{ icon() }}</span>
+
+    <input
+      class="elem-input-field"
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [attr.maxlength]="maxLength()"
+      [(ngModel)]="value"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+    />
+  </div>
+
+  <!-- Helper Text -->
+  <p *ngIf="helperText() && !error()" class="elem-input-helper">
+    {{ helperText() }}
+  </p>
+
+  <!-- Error Message -->
+  <p *ngIf="error()" class="elem-input-error-text">
+    {{ error() }}
+  </p>
+</div>
