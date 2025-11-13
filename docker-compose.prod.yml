@@ -1,0 +1,138 @@
+services:
+  # Production Shell App
+  shell:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: shell
+    container_name: elementamon-shell-prod
+    ports:
+      - '80:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Production Home App
+  home:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: home
+    container_name: elementamon-home-prod
+    ports:
+      - '8001:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production Deck Builder
+  deck-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: deck-builder
+    container_name: elementamon-deck-builder-prod
+    ports:
+      - '8002:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production Battle
+  battle:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: battle
+    container_name: elementamon-battle-prod
+    ports:
+      - '8003:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production World Map
+  world-map:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: world-map
+    container_name: elementamon-world-map-prod
+    ports:
+      - '8004:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production Inventory
+  inventory:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: inventory
+    container_name: elementamon-inventory-prod
+    ports:
+      - '8005:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production Avatar Customization
+  avatar-customization:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: avatar-customization
+    container_name: elementamon-avatar-customization-prod
+    ports:
+      - '8006:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # Production Game Over
+  game-over:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        APP_NAME: game-over
+    container_name: elementamon-game-over-prod
+    ports:
+      - '8007:80'
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+networks:
+  elementamon-network:
+    driver: bridge

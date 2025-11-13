@@ -224,6 +224,223 @@ services:
       - NX_DAEMON=false
     restart: unless-stopped
 
+  # ========================================
+  # Backend Microservices
+  # ========================================
+
+  # Auth Service (PostgreSQL)
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: auth-service
+    container_name: elementamon-auth-service
+    ports:
+      - '3001:3001'
+    volumes:
+      - ./services/auth:/app/services/auth
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://elementamon:elementamon_dev_pass@postgres:5432/elementamon
+      - JWT_SECRET=dev_jwt_secret_change_in_production
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Cards Service (MongoDB)
+  cards-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: cards-service
+    container_name: elementamon-cards-service
+    ports:
+      - '3002:3002'
+    volumes:
+      - ./services/cards:/app/services/cards
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Fight Service (MongoDB)
+  fight-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: fight-service
+    container_name: elementamon-fight-service
+    ports:
+      - '3003:3003'
+    volumes:
+      - ./services/fight:/app/services/fight
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # World Service (MongoDB)
+  world-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: world-service
+    container_name: elementamon-world-service
+    ports:
+      - '3004:3004'
+    volumes:
+      - ./services/world:/app/services/world
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Character Service (MongoDB)
+  character-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: character-service
+    container_name: elementamon-character-service
+    ports:
+      - '3005:3005'
+    volumes:
+      - ./services/character:/app/services/character
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Economy Service (MongoDB)
+  economy-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: economy-service
+    container_name: elementamon-economy-service
+    ports:
+      - '3006:3006'
+    volumes:
+      - ./services/economy:/app/services/economy
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Skins Service (MongoDB)
+  skins-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: skins-service
+    container_name: elementamon-skins-service
+    ports:
+      - '3007:3007'
+    volumes:
+      - ./services/skins:/app/services/skins
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3007
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # AI Service (OpenAI, ElevenLabs)
+  ai-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.microservices
+      target: ai-service
+    container_name: elementamon-ai-service
+    ports:
+      - '3008:3008'
+    volumes:
+      - ./services/ai:/app/services/ai
+      - /app/node_modules
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3008
+      - MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon?authSource=admin
+      - REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_KEY=${AZURE_OPENAI_KEY:-}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
 networks:
   elementamon-network:
     driver: bridge

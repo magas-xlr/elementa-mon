@@ -1,0 +1,290 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/elementamon
+
+jobs:
+  # Job 1: Build and test Angular apps
+  build-angular:
+    name: Build Angular Apps
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app:
+          [shell, home, deck-builder, battle, world-map, inventory, avatar-customization, game-over]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.12.0
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build ui-components library
+        run: npx nx build ui-components --configuration=production
+
+      - name: Build ${{ matrix.app }}
+        run: npx nx build ${{ matrix.app }} --configuration=production
+
+      - name: Run unit tests for ${{ matrix.app }}
+        run: npx nx test ${{ matrix.app }} --ci --code-coverage
+
+      - name: Run linter for ${{ matrix.app }}
+        run: npx nx lint ${{ matrix.app }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-build
+          path: dist/apps/${{ matrix.app }}
+          retention-days: 7
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/${{ matrix.app }}/lcov.info
+          flags: ${{ matrix.app }}
+          name: ${{ matrix.app }}-coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  # Job 2: Build Docker images
+  build-docker:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: build-angular
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push development image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.angular
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/dev:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Build and push production images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.production
+          build-args: |
+            APP_NAME=shell
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/shell:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/shell:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Job 3: Integration tests with Docker Compose
+  integration-test:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-docker
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          NODE_ENV=test
+          DATABASE_URL=postgresql://elementamon:elementamon_dev_pass@postgres:5432/elementamon
+          MONGODB_URI=mongodb://elementamon:elementamon_dev_pass@mongodb:27017/elementamon
+          REDIS_URL=redis://:elementamon_dev_pass@redis:6379
+          EOF
+
+      - name: Start services with Docker Compose
+        run: docker-compose -f docker-compose.dev.yml up -d postgres mongodb redis
+
+      - name: Wait for databases to be healthy
+        run: |
+          echo "Waiting for PostgreSQL..."
+          timeout 60 bash -c 'until docker exec elementamon-postgres pg_isready -U elementamon; do sleep 2; done'
+
+          echo "Waiting for MongoDB..."
+          timeout 60 bash -c 'until docker exec elementamon-mongodb mongosh --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 2; done'
+
+          echo "Waiting for Redis..."
+          timeout 60 bash -c 'until docker exec elementamon-redis redis-cli -a elementamon_dev_pass ping > /dev/null 2>&1; do sleep 2; done'
+
+      - name: Run database migrations
+        run: |
+          # Add migration commands here when ready
+          echo "Database migrations will run here"
+
+      - name: Run e2e tests
+        run: |
+          # Add e2e test commands here when ready
+          echo "E2E tests will run here"
+
+      - name: Collect logs on failure
+        if: failure()
+        run: docker-compose -f docker-compose.dev.yml logs > docker-logs.txt
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs
+          path: docker-logs.txt
+
+      - name: Stop services
+        if: always()
+        run: docker-compose -f docker-compose.dev.yml down -v
+
+  # Job 4: Security scanning
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-docker
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run npm audit
+        run: |
+          npm install -g pnpm@9.12.0
+          pnpm install --frozen-lockfile
+          pnpm audit --audit-level=moderate
+        continue-on-error: true
+
+  # Job 5: Deploy to staging (on main branch)
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [integration-test, security-scan]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging.elementamon.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging server
+        run: |
+          # Add deployment script here
+          echo "Deploying to staging environment..."
+          # Example: SSH to server and pull latest images
+          # ssh user@staging-server 'cd /app && docker-compose pull && docker-compose up -d'
+
+      - name: Run smoke tests
+        run: |
+          # Add smoke test commands
+          echo "Running smoke tests on staging..."
+          # curl http://staging.elementamon.com/health
+
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment completed'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Job 6: Performance testing
+  performance-test:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://staging.elementamon.com
+            https://staging.elementamon.com/home
+            https://staging.elementamon.com/battle
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Run load tests with k6
+        run: |
+          # Add k6 load testing
+          echo "Load testing with k6..."
+          # docker run --rm -i grafana/k6 run - < loadtest.js
