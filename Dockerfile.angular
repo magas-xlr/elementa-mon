@@ -25,46 +25,46 @@ RUN npx nx build ui-components
 FROM base AS shell-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4200
-CMD ["npx", "nx", "serve", "shell", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "shell", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4200"]
 
 # Development stage for home app
 FROM base AS home-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4201
-CMD ["npx", "nx", "serve", "home", "--port", "4201", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "home", "--port", "4201", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4201"]
 
 # Development stage for deck-builder app
 FROM base AS deck-builder-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4202
-CMD ["npx", "nx", "serve", "deck-builder", "--port", "4202", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "deck-builder", "--port", "4202", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4202"]
 
 # Development stage for battle app
 FROM base AS battle-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4203
-CMD ["npx", "nx", "serve", "battle", "--port", "4203", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "battle", "--port", "4203", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4203"]
 
 # Development stage for world-map app
 FROM base AS world-map-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4204
-CMD ["npx", "nx", "serve", "world-map", "--port", "4204", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "world-map", "--port", "4204", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4204"]
 
 # Development stage for inventory app
 FROM base AS inventory-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4205
-CMD ["npx", "nx", "serve", "inventory", "--port", "4205", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "inventory", "--port", "4205", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4205"]
 
 # Development stage for avatar-customization app
 FROM base AS avatar-customization-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4206
-CMD ["npx", "nx", "serve", "avatar-customization", "--port", "4206", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "avatar-customization", "--port", "4206", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4206"]
 
 # Development stage for game-over app
 FROM base AS game-over-dev
 COPY --from=build-ui-components /app/dist/libs/shared/ui-components /app/dist/libs/shared/ui-components
 EXPOSE 4207
-CMD ["npx", "nx", "serve", "game-over", "--port", "4207", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["npx", "nx", "serve", "game-over", "--port", "4207", "--host", "0.0.0.0", "--disable-host-check", "--public-host", "http://localhost:4207"]

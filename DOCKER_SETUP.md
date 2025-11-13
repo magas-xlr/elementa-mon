@@ -242,6 +242,27 @@ docker-compose -f docker-compose.dev.yml logs shell
 # - Nx cache issues
 ```
 
+### Module Federation 404 Errors (remoteEntry.js)
+
+**Symptoms**: Browser shows "Failed to fetch dynamically imported module: http://localhost:4201/remoteEntry.js"
+
+**Cause**: Angular dev server needs `--public-host` flag to properly serve Module Federation assets.
+
+**Solution**: Already configured in Dockerfile.angular with `--public-host` flag for each app.
+
+If you see this error:
+
+```powershell
+# Rebuild containers
+docker-compose -f docker-compose.dev.yml down
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Verify each remote serves remoteEntry.js
+curl http://localhost:4201/remoteEntry.js  # Should return JS code
+curl http://localhost:4202/remoteEntry.js
+# ... etc for all ports 4201-4207
+```
+
 ### Hot Reload Not Working
 
 1. **Check file permissions** (WSL2):
