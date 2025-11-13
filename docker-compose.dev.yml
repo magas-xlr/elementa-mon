@@ -1,0 +1,237 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: elementamon-postgres
+    environment:
+      POSTGRES_USER: elementamon
+      POSTGRES_PASSWORD: elementamon_dev_pass
+      POSTGRES_DB: elementamon
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - elementamon-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U elementamon']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7-jammy
+    container_name: elementamon-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: elementamon
+      MONGO_INITDB_ROOT_PASSWORD: elementamon_dev_pass
+      MONGO_INITDB_DATABASE: elementamon
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - elementamon-network
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: elementamon-redis
+    command: redis-server --requirepass elementamon_dev_pass
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - elementamon-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Shell App (Host) - Module Federation Host
+  shell:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: shell-dev
+    container_name: elementamon-shell
+    ports:
+      - '4200:4200'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    depends_on:
+      - home
+      - deck-builder
+      - battle
+      - world-map
+      - inventory
+      - avatar-customization
+      - game-over
+    restart: unless-stopped
+
+  # Home Remote App
+  home:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: home-dev
+    container_name: elementamon-home
+    ports:
+      - '4201:4201'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # Deck Builder Remote App
+  deck-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: deck-builder-dev
+    container_name: elementamon-deck-builder
+    ports:
+      - '4202:4202'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # Battle Remote App
+  battle:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: battle-dev
+    container_name: elementamon-battle
+    ports:
+      - '4203:4203'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # World Map Remote App
+  world-map:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: world-map-dev
+    container_name: elementamon-world-map
+    ports:
+      - '4204:4204'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # Inventory Remote App
+  inventory:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: inventory-dev
+    container_name: elementamon-inventory
+    ports:
+      - '4205:4205'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # Avatar Customization Remote App
+  avatar-customization:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: avatar-customization-dev
+    container_name: elementamon-avatar-customization
+    ports:
+      - '4206:4206'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+  # Game Over Remote App
+  game-over:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+      target: game-over-dev
+    container_name: elementamon-game-over
+    ports:
+      - '4207:4207'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nx
+    networks:
+      - elementamon-network
+    environment:
+      - NODE_ENV=development
+      - NX_DAEMON=false
+    restart: unless-stopped
+
+networks:
+  elementamon-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local

@@ -1765,13 +1765,36 @@ Add to `.vscode/settings.json`:
 
 ```bash
 Node.js >= 22.11.0
-npm >= 10.0.0
+pnpm >= 9.12.0 (recommended over npm)
 Angular CLI >= 20.0.0
 Nx CLI >= 20.0.0
+Docker Desktop >= 24.0 (for Docker setup)
 GitHub Copilot (recommended for development)
 ```
 
-### Installation
+### Quick Start with Docker 🐳 (Recommended)
+
+The **fastest way** to run all services:
+
+```powershell
+# Start all 8 Angular apps + 3 databases with one command
+.\docker-start.ps1
+
+# Or use docker-compose directly
+docker-compose -f docker-compose.dev.yml up
+```
+
+This starts:
+
+- ✅ Shell (host) on port 4200
+- ✅ 7 Remote apps (ports 4201-4207)
+- ✅ PostgreSQL, MongoDB, Redis
+
+Access the shell at: **http://localhost:4200**
+
+📚 **Full Docker guide**: [DOCKER_SETUP.md](DOCKER_SETUP.md)
+
+### Manual Installation
 
 ```bash
 # Clone the repository
@@ -1779,7 +1802,10 @@ git clone https://github.com/magas-xlr/elementa-mon.git
 cd elementa-mon
 
 # Install dependencies
-npm install
+pnpm install
+
+# Build shared UI components library
+npx nx build ui-components
 
 # Set up environment variables
 cp .env.example .env
@@ -1822,18 +1848,54 @@ INDECX_TOKEN=your_indecx_token
 
 ### Development Server
 
-```bash
-# Serve the shell application with all microfrontends
-npx nx serve shell
+#### Option 1: Docker (All services at once) 🐳
 
-# Serve with specific microfrontend
-npx nx serve game-core
+```powershell
+# Start all services
+.\docker-start.ps1
 
-# Serve with production configuration
-npx nx serve shell --configuration=production
+# View logs
+.\docker-logs.ps1
+
+# Check status
+.\docker-status.ps1
+
+# Stop all services
+.\docker-stop.ps1
 ```
 
-Access the application at `http://localhost:4200`
+#### Option 2: Manual (Individual terminals)
+
+```bash
+# Terminal 1 - Shell (Host)
+npx nx serve shell
+
+# Terminal 2 - Home Remote
+npx nx serve home --port 4201
+
+# Terminal 3 - Deck Builder
+npx nx serve deck-builder --port 4202
+
+# Terminal 4 - Battle
+npx nx serve battle --port 4203
+
+# Terminal 5 - World Map
+npx nx serve world-map --port 4204
+
+# Terminal 6 - Inventory
+npx nx serve inventory --port 4205
+
+# Terminal 7 - Avatar Customization
+npx nx serve avatar-customization --port 4206
+
+# Terminal 8 - Game Over
+npx nx serve game-over --port 4207
+```
+
+Access the application at **http://localhost:4200**
+
+📚 **Module Federation guide**: [MODULE_FEDERATION.md](MODULE_FEDERATION.md)
+📚 **Running apps guide**: [RUNNING_APPS.md](RUNNING_APPS.md)
 
 ## 💻 Development
 
