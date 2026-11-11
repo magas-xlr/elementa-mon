@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
+import { appConfig } from './app.config';
+import { appRoutes } from './app.routes';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -28,5 +30,20 @@ describe('AppComponent', () => {
     expect(app.isModalOpen()).toBe(true);
     app.closeModal();
     expect(app.isModalOpen()).toBe(false);
+  });
+
+  it('should log when the demo button is clicked', () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    TestBed.createComponent(AppComponent).componentInstance.handleButtonClick();
+    expect(log).toHaveBeenCalledWith('Button clicked!');
+    log.mockRestore();
+  });
+
+  it('should route the root path to AppComponent', () => {
+    expect(appRoutes).toEqual([{ path: '', component: AppComponent }]);
+  });
+
+  it('should provide the router', () => {
+    expect(appConfig.providers.length).toBeGreaterThan(0);
   });
 });

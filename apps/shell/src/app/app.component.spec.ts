@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
+import { appConfig } from './app.config';
+
+// The federation runtime is ESM-only and not needed to render the shell
+jest.mock('@angular-architects/native-federation', () => ({
+  loadRemoteModule: jest.fn(),
+}));
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -28,5 +34,9 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const links = compiled.querySelectorAll('nav a.nav-link');
     expect(links.length).toEqual(fixture.componentInstance.routes.length);
+  });
+
+  it('should provide the router', () => {
+    expect(appConfig.providers.length).toBeGreaterThan(0);
   });
 });

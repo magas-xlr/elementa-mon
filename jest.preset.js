@@ -24,6 +24,7 @@ module.exports = {
     '!src/**/*.stories.ts',
     '!src/**/index.ts',
     '!src/main.ts',
+    '!src/bootstrap.ts',
     '!src/test-setup.ts',
   ],
   coverageThreshold: {

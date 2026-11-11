@@ -24,13 +24,13 @@ Shell (Host) - http://localhost:4200
 
 ## Configuration Files
 
-| File                                    | Purpose                                                       |
-| --------------------------------------- | ------------------------------------------------------------- |
-| `apps/<app>/federation.config.js`       | Federation name, exposed modules and shared dependencies      |
-| `apps/<app>/src/main.ts`                | Calls `initFederation()` before bootstrapping                 |
-| `apps/<app>/src/bootstrap.ts`           | The original Angular bootstrap code                           |
-| `apps/shell/public/federation.manifest.json` | Remote name → `remoteEntry.json` URL map used by the shell |
-| `apps/<app>/project.json`               | `build`/`serve` use `@angular-architects/native-federation:build`, wrapping the `esbuild` and `serve-original` targets |
+| File                                         | Purpose                                                                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `apps/<app>/federation.config.js`            | Federation name, exposed modules and shared dependencies                                                               |
+| `apps/<app>/src/main.ts`                     | Calls `initFederation()` before bootstrapping                                                                          |
+| `apps/<app>/src/bootstrap.ts`                | The original Angular bootstrap code                                                                                    |
+| `apps/shell/public/federation.manifest.json` | Remote name → `remoteEntry.json` URL map used by the shell                                                             |
+| `apps/<app>/project.json`                    | `build`/`serve` use `@angular-architects/native-federation:build`, wrapping the `esbuild` and `serve-original` targets |
 
 ### Shell (Host)
 
