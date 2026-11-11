@@ -43,4 +43,11 @@ export class ModalComponent {
   handleContentClick(event: MouseEvent) {
     event.stopPropagation();
   }
+
+  // Let Escape bubble up to the backdrop so it can close the modal
+  handleContentKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Escape') {
+      event.stopPropagation();
+    }
+  }
 }

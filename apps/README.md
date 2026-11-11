@@ -160,13 +160,13 @@ app-name/
 Each microfrontend is exposed via Module Federation:
 
 ```typescript
-// module-federation.config.ts
-module.exports = {
+// federation.config.js (Native Federation, see MODULE_FEDERATION.md)
+module.exports = withNativeFederation({
   name: 'home',
   exposes: {
-    './Module': './src/app/remote-entry/entry.component.ts',
+    './Routes': './apps/home/src/app/app.routes.ts',
   },
-};
+});
 ```
 
 Shell app imports remote modules dynamically:

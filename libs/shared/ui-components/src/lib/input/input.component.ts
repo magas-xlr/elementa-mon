@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
 export type InputSize = 'sm' | 'md' | 'lg';
 
+let nextInputId = 0;
+
 @Component({
   selector: 'lib-input',
   imports: [CommonModule, FormsModule],
@@ -13,6 +15,9 @@ export type InputSize = 'sm' | 'md' | 'lg';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
+  // Unique id linking the label to the native input
+  readonly inputId = `lib-input-${nextInputId++}`;
+
   // Two-way binding
   value = model<string>('');
 

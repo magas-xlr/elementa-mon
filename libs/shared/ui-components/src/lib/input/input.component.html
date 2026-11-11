@@ -1,6 +1,6 @@
 <div class="elem-input-wrapper">
   <!-- Label -->
-  <label *ngIf="label()" class="elem-input-label">
+  <label *ngIf="label()" class="elem-input-label" [for]="inputId">
     {{ label() }}
     <span *ngIf="required()" class="elem-input-required">*</span>
   </label>
@@ -15,6 +15,7 @@
 
     <input
       class="elem-input-field"
+      [id]="inputId"
       [type]="type()"
       [placeholder]="placeholder()"
       [disabled]="disabled()"

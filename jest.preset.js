@@ -24,6 +24,7 @@ module.exports = {
     '!src/**/*.stories.ts',
     '!src/**/index.ts',
     '!src/main.ts',
+    '!src/bootstrap.ts',
     '!src/test-setup.ts',
   ],
   coverageThreshold: {
@@ -35,5 +36,4 @@ module.exports = {
     },
   },
   coverageReporters: ['html', 'text', 'lcov', 'json'],
-  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 };

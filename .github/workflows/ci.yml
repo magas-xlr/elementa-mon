@@ -227,7 +227,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [shell, home, battle, deck-builder, world-map, inventory, avatar-customization, game-over]
+        app:
+          [shell, home, battle, deck-builder, world-map, inventory, avatar-customization, game-over]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -346,10 +347,12 @@ jobs:
     if: always()
     needs: [deploy-production]
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
       - name: Discord notification
+        # Skip instead of failing when the webhook secret is not configured
+        if: env.DISCORD_WEBHOOK != ''
         uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: 'ElementaMon deployment to production completed! 🚀'

@@ -1,5 +1,19 @@
-<div class="elem-modal-backdrop" *ngIf="isOpen()" (click)="handleBackdropClick()">
-  <div [class]="'elem-modal-content elem-modal-' + size()" (click)="handleContentClick($event)">
+<div
+  class="elem-modal-backdrop"
+  *ngIf="isOpen()"
+  tabindex="-1"
+  (click)="handleBackdropClick()"
+  (keydown.escape)="handleClose()"
+>
+  <div
+    [class]="'elem-modal-content elem-modal-' + size()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title() || null"
+    tabindex="-1"
+    (click)="handleContentClick($event)"
+    (keydown)="handleContentKeydown($event)"
+  >
     <!-- Modal Header -->
     <div class="elem-modal-header" *ngIf="title() || showCloseButton()">
       <h2 class="elem-modal-title" *ngIf="title()">{{ title() }}</h2>

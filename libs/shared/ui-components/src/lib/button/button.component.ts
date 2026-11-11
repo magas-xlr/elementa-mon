@@ -5,7 +5,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'wa
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 @Component({
-  selector: 'elem-button',
+  selector: 'lib-button',
   imports: [CommonModule],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
