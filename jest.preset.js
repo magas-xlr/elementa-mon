@@ -35,5 +35,4 @@ module.exports = {
     },
   },
   coverageReporters: ['html', 'text', 'lcov', 'json'],
-  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 };

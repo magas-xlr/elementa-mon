@@ -196,9 +196,9 @@ If you make changes to the UI components library:
 ### Remote App Won't Load
 
 1. Check if the remote app is running on the correct port
-2. Verify `remoteEntry.js` is accessible (e.g., http://localhost:4201/remoteEntry.js)
+2. Verify `remoteEntry.json` is accessible (e.g., http://localhost:4201/remoteEntry.json)
 3. Check browser console for Module Federation errors
-4. Ensure `module-federation.config.ts` has correct port configuration
+4. Ensure `apps/shell/public/federation.manifest.json` has the correct ports (see MODULE_FEDERATION.md)
 
 ### Component Import Errors
 

@@ -8,26 +8,26 @@
   <section class="component-section">
     <h2>Button Components</h2>
     <div class="button-grid">
-      <elem-button variant="primary" (clicked)="handleButtonClick()"> Primary Button </elem-button>
-      <elem-button variant="secondary">Secondary Button</elem-button>
-      <elem-button variant="success" icon="✓">Success Button</elem-button>
-      <elem-button variant="danger" icon="⚠">Danger Button</elem-button>
-      <elem-button variant="warning">Warning Button</elem-button>
-      <elem-button variant="ghost">Ghost Button</elem-button>
+      <lib-button variant="primary" (clicked)="handleButtonClick()"> Primary Button </lib-button>
+      <lib-button variant="secondary">Secondary Button</lib-button>
+      <lib-button variant="success" icon="✓">Success Button</lib-button>
+      <lib-button variant="danger" icon="⚠">Danger Button</lib-button>
+      <lib-button variant="warning">Warning Button</lib-button>
+      <lib-button variant="ghost">Ghost Button</lib-button>
     </div>
 
     <h3>Button Sizes</h3>
     <div class="button-grid">
-      <elem-button size="sm">Small</elem-button>
-      <elem-button size="md">Medium</elem-button>
-      <elem-button size="lg">Large</elem-button>
+      <lib-button size="sm">Small</lib-button>
+      <lib-button size="md">Medium</lib-button>
+      <lib-button size="lg">Large</lib-button>
     </div>
 
     <h3>Button States</h3>
     <div class="button-grid">
-      <elem-button [disabled]="true">Disabled</elem-button>
-      <elem-button [loading]="true">Loading...</elem-button>
-      <elem-button [fullWidth]="true">Full Width</elem-button>
+      <lib-button [disabled]="true">Disabled</lib-button>
+      <lib-button [loading]="true">Loading...</lib-button>
+      <lib-button [fullWidth]="true">Full Width</lib-button>
     </div>
   </section>
 
@@ -41,7 +41,7 @@
         </div>
         <p>This is a default card with subtle shadow.</p>
         <div card-footer>
-          <elem-button size="sm">Action</elem-button>
+          <lib-button size="sm">Action</lib-button>
         </div>
       </lib-card>
 
@@ -97,15 +97,15 @@
   <!-- Modal Showcase -->
   <section class="component-section">
     <h2>Modal Component</h2>
-    <elem-button (clicked)="openModal()" icon="🔥"> Open Modal </elem-button>
+    <lib-button (clicked)="openModal()" icon="🔥"> Open Modal </lib-button>
 
     <lib-modal [isOpen]="isModalOpen()" title="Welcome to ElementaMon!" size="md" (closed)="closeModal()">
       <p>Start your adventure by choosing your first ElementaMon companion!</p>
       <p>Collect powerful creatures, build the ultimate deck, and battle your way to become a champion.</p>
 
       <div modal-footer>
-        <elem-button variant="ghost" (clicked)="closeModal()"> Cancel </elem-button>
-        <elem-button variant="primary" (clicked)="closeModal()"> Start Adventure </elem-button>
+        <lib-button variant="ghost" (clicked)="closeModal()"> Cancel </lib-button>
+        <lib-button variant="primary" (clicked)="closeModal()"> Start Adventure </lib-button>
       </div>
     </lib-modal>
   </section>

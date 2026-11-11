@@ -1,2 +1,11 @@
-// Root ESLint config - Nx will use per-project configs
-export default [];
+// Root ESLint config - per-project configs extend this one
+import nx from '@nx/eslint-plugin';
+
+export default [
+  ...nx.configs['flat/base'],
+  ...nx.configs['flat/typescript'],
+  ...nx.configs['flat/javascript'],
+  {
+    ignores: ['**/dist', '**/node_modules', '**/.nx', '**/coverage'],
+  },
+];

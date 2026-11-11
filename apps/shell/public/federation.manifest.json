@@ -1,0 +1,9 @@
+{
+  "home": "http://localhost:4201/remoteEntry.json",
+  "deck-builder": "http://localhost:4202/remoteEntry.json",
+  "battle": "http://localhost:4203/remoteEntry.json",
+  "world-map": "http://localhost:4204/remoteEntry.json",
+  "inventory": "http://localhost:4205/remoteEntry.json",
+  "avatar-customization": "http://localhost:4206/remoteEntry.json",
+  "game-over": "http://localhost:4207/remoteEntry.json"
+}

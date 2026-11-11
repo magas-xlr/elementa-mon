@@ -1,6 +1,7 @@
-import { loadRemoteModule } from '@angular-architects/module-federation';
+import { loadRemoteModule } from '@angular-architects/native-federation';
 import { Route } from '@angular/router';
 
+// Remote URLs come from public/federation.manifest.json
 export const appRoutes: Route[] = [
   {
     path: '',
@@ -9,65 +10,30 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'home',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4201/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('home', './Routes').then((m) => m.default),
   },
   {
     path: 'deck-builder',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4202/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('deck-builder', './Routes').then((m) => m.default),
   },
   {
     path: 'battle',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4203/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('battle', './Routes').then((m) => m.default),
   },
   {
     path: 'world-map',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4204/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('world-map', './Routes').then((m) => m.default),
   },
   {
     path: 'inventory',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4205/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('inventory', './Routes').then((m) => m.default),
   },
   {
     path: 'avatar-customization',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4206/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('avatar-customization', './Routes').then((m) => m.default),
   },
   {
     path: 'game-over',
-    loadChildren: () =>
-      loadRemoteModule({
-        type: 'module',
-        remoteEntry: 'http://localhost:4207/remoteEntry.js',
-        exposedModule: './Routes',
-      }).then((m) => m.default),
+    loadChildren: () => loadRemoteModule('game-over', './Routes').then((m) => m.default),
   },
 ];
