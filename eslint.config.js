@@ -1,11 +1,18 @@
-// Root ESLint config - per-project configs extend this one
-import nx from '@nx/eslint-plugin';
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
-  ...nx.configs['flat/base'],
-  ...nx.configs['flat/typescript'],
-  ...nx.configs['flat/javascript'],
+export default tseslint.config(
+  { ignores: ['dist', 'release', 'node_modules', 'tmp', 'coverage'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    ignores: ['**/dist', '**/node_modules', '**/.nx', '**/coverage'],
+    files: ['src/**/*.ts'],
+    languageOptions: { globals: globals.browser },
   },
-];
+  {
+    files: ['electron/**/*.cjs'],
+    languageOptions: { globals: globals.node, sourceType: 'commonjs' },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  }
+);
