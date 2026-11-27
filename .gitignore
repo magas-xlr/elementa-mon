@@ -110,3 +110,7 @@ docs/.vitepress/cache
 *~
 
 .angular
+
+# Desktop builds
+/release
+/electron-cache
