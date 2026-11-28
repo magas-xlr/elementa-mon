@@ -60,3 +60,16 @@ Este documento resume as regras de negócio e de produto implementadas em `src/g
 - Pets: Blockbench → glTF (`.glb`), ≤ 300 triângulos por estágio, textura ≤ 64×64 ou só cores por vértice.
 - Cenários: Crocotile 3D → `.glb` por tile/bioma, mantendo o total visível perto de 5 mil triângulos.
 - Carregar com `GLTFLoader` no lugar de `creatureGeometry`/`treeGeometry` em `src/render/models.ts`; o resto do jogo não muda.
+
+## Direção de arte e som
+
+- **Visual HD-2D (inspiração, sem copiar arte de outros jogos)**: personagens em pixel art dentro de um cenário 3D. Cada pet (espécie + estágio), o avatar (4 direções), os treinadores, as árvores e o mato são renderizados uma vez a partir dos modelos procedurais, em resolução baixa, com posterização e contorno de 1 px, e exibidos como billboards (`src/render/sprites.ts`). As miniaturas das cartas usam a mesma imagem. O chão tem texturas de 16 px geradas por bioma (`src/render/pixelTextures.ts`). Um passe final (`src/render/postfx.ts`) aplica tilt-shift, bloom, gradação quente e vinheta; a opção "Efeitos HD-2D" desliga.
+- **Modelos toon (base dos sprites)**: `MeshToonMaterial` com rampa de 3 tons (sombra, meio-tom, luz), cores chapadas, olhos grandes com brilho, árvores "pirulito" e nuvens arredondadas, tudo com contorno escuro (`src/render/toon.ts`).
+- **Trilha**: 5 faixas originais (abertura, campos, batalha, chefe e vitória) em síntese FM de 2 operadores, no espírito do chip YM2612 do Mega Drive: baixo "slap", lead com vibrato e eco curto, acordes de metais nos contratempos e bateria eletrônica. As melodias são próprias; o que lembra os jogos de 16 bits é o timbre e o andamento, não as notas.
+
+## Idiomas
+
+- 7 idiomas: inglês, chinês simplificado, russo, espanhol, português, alemão e francês. Na primeira abertura o jogo segue o idioma do sistema (inglês se não for nenhum desses); depois vale a escolha em **Configurações → Idioma**, salva no save.
+- Textos em `src/i18n/`: `pt.ts` é a fonte das chaves de interface; cada idioma traz interface, tutorial, cartas, lore dos pets, relíquias, elementos, mana, raridades e cores. Os testes (`i18n.test.ts`) falham se faltar uma chave, uma carta ou um marcador `{n}`.
+- Nomes de pets são nomes próprios e ficam iguais nos idiomas de alfabeto latino; chinês e russo têm versões próprias (`names`).
+- Para adicionar texto novo: crie a chave em `pt.ts`, use `t('chave')` e traduza nos outros 6 arquivos.

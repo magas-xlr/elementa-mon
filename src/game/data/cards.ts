@@ -1,3 +1,4 @@
+import { cardText, manaText, t } from '../../i18n';
 import type { Element } from './elements';
 import type { Rarity } from './species';
 
@@ -21,6 +22,8 @@ export type CardEffect =
   | { kind: 'cura'; amount: number; area?: boolean }
   | { kind: 'comprar'; amount: number }
   | { kind: 'fortalecer'; amount: number }
+  /** Transforms an allied pet into an elemental form for this battle (+1 ATK, attacks inherit element). */
+  | { kind: 'transformar'; element: Element }
   /** Summons a helper that hits a random enemy for `power` at the end of each player turn. */
   | { kind: 'invocar'; power: number; turns: number };
 
@@ -267,6 +270,58 @@ export const CARDS: readonly CardDef[] = [
     lore: 'Tão bonito que machuca.',
   }),
 
+  // Cartas de Evolução Elemental (transformam o pet em forma elemental durante a batalha!)
+  card({
+    id: 'evo_fogo',
+    name: 'Forma de Fogo',
+    element: 'fogo',
+    cost: { corpo: 1 },
+    effect: { kind: 'transformar', element: 'fogo' },
+    rarity: 'raro',
+    requiredLevel: 1,
+    lore: 'O pet incendeia em chamas vivas e seus ataques ganham variação de Fogo até o fim da batalha.',
+  }),
+  card({
+    id: 'evo_agua',
+    name: 'Forma de Água',
+    element: 'agua',
+    cost: { ilusao: 1 },
+    effect: { kind: 'transformar', element: 'agua' },
+    rarity: 'raro',
+    requiredLevel: 1,
+    lore: 'O pet envolve-se em água cristalina e seus ataques ganham variação de Água na batalha.',
+  }),
+  card({
+    id: 'evo_eletrico',
+    name: 'Forma Elétrica',
+    element: 'eletrico',
+    cost: { ilusao: 1 },
+    effect: { kind: 'transformar', element: 'eletrico' },
+    rarity: 'raro',
+    requiredLevel: 1,
+    lore: 'Raios dourados crepitam ao redor do pet, eletrizando seus golpes na batalha.',
+  }),
+  card({
+    id: 'evo_terra',
+    name: 'Forma de Terra',
+    element: 'terra',
+    cost: { talento: 1 },
+    effect: { kind: 'transformar', element: 'terra' },
+    rarity: 'raro',
+    requiredLevel: 1,
+    lore: 'Rochas e musgo revestem o pet, dando força sísmica aos ataques na batalha.',
+  }),
+  card({
+    id: 'evo_gelo',
+    name: 'Forma de Gelo',
+    element: 'gelo',
+    cost: { ilusao: 1 },
+    effect: { kind: 'transformar', element: 'gelo' },
+    rarity: 'raro',
+    requiredLevel: 2,
+    lore: 'Cristais de geada envolvem o pet, congelando seus ataques até o fim do duelo.',
+  }),
+
   // Invocações (max 1 per deck)
   card({
     id: 'fenix',
@@ -314,7 +369,7 @@ export function getCard(id: string): CardDef {
 export const STARTER_DECK: readonly string[] = [
   'investida',
   'investida',
-  'investida',
+  'evo_fogo',
   'guarda',
   'guarda',
   'curativo',
@@ -331,6 +386,18 @@ export const CARD_COLORS = {
   pet3: '#e870b0',
 } as const;
 
+/** Localized card name and lore (falls back to the Portuguese data). */
+export const cardName = (c: CardDef | string): string => {
+  const def = typeof c === 'string' ? getCard(c) : c;
+  return cardText(def.id)?.[0] ?? def.name;
+};
+export const cardLore = (c: CardDef | string): string => {
+  const def = typeof c === 'string' ? getCard(c) : c;
+  return cardText(def.id)?.[1] ?? def.lore;
+};
+export const manaName = (m: ManaType): string => manaText(m)?.[0] ?? MANA_INFO[m].name;
+export const manaShort = (m: ManaType): string => manaText(m)?.[1] ?? MANA_INFO[m].short;
+
 export function costTotal(cost: Partial<ManaPool>): number {
   return (cost.corpo ?? 0) + (cost.ilusao ?? 0) + (cost.talento ?? 0);
 }
@@ -338,16 +405,18 @@ export function costTotal(cost: Partial<ManaPool>): number {
 export function describeEffect(effect: CardEffect): string {
   switch (effect.kind) {
     case 'dano':
-      return `Causa ${effect.power} de dano${effect.area ? ' a todos os inimigos' : ''}.`;
+      return t(effect.area ? 'fxDamageAll' : 'fxDamage', { n: effect.power });
     case 'escudo':
-      return `Dá ${effect.amount} de escudo${effect.area ? ' a toda a equipe' : ''}.`;
+      return t(effect.area ? 'fxShieldAll' : 'fxShield', { n: effect.amount });
     case 'cura':
-      return `Cura ${effect.amount} de vida${effect.area ? ' de toda a equipe' : ''}.`;
+      return t(effect.area ? 'fxHealAll' : 'fxHeal', { n: effect.amount });
     case 'comprar':
-      return `Compra ${effect.amount} cartas.`;
+      return t('fxDraw', { n: effect.amount });
     case 'fortalecer':
-      return `O pet ganha +${effect.amount} de ataque nesta batalha.`;
+      return t('fxBuff', { n: effect.amount });
+    case 'transformar':
+      return `Transforma o pet em forma elemental (+1 ATK e ataques desse elemento na batalha).`;
     case 'invocar':
-      return `Invoca um aliado que causa ${effect.power} de dano por turno durante ${effect.turns} turnos.`;
+      return t('fxSummon', { n: effect.power, turns: effect.turns });
   }
 }

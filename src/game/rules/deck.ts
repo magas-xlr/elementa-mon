@@ -1,11 +1,12 @@
-import { getCard } from '../data/cards';
-import { getSpecies } from '../data/species';
+import { t } from '../../i18n';
+import { cardName, getCard } from '../data/cards';
+import { getSpecies, stageName } from '../data/species';
 
 export const MAX_DECK = 15;
 export const MIN_DECK = 5;
 export const MAX_INVOCACOES = 1;
 export const MAX_COPIES = 3;
-export const MAX_PARTY = 3;
+export const MAX_PARTY = 4;
 
 /** Returns human-readable problems; an empty list means the deck is valid. */
 export function validateDeck(
@@ -14,9 +15,8 @@ export function validateDeck(
   { allowIncomplete = false } = {}
 ): string[] {
   const errors: string[] = [];
-  if (cardIds.length > MAX_DECK) errors.push(`O deck pode ter no máximo ${MAX_DECK} cartas.`);
-  if (!allowIncomplete && cardIds.length < MIN_DECK)
-    errors.push(`O deck precisa de pelo menos ${MIN_DECK} cartas.`);
+  if (cardIds.length > MAX_DECK) errors.push(t('errDeckMax', { n: MAX_DECK }));
+  if (!allowIncomplete && cardIds.length < MIN_DECK) errors.push(t('errDeckMin', { n: MIN_DECK }));
 
   const counts = new Map<string, number>();
   let invocacoes = 0;
@@ -25,25 +25,25 @@ export function validateDeck(
     counts.set(id, (counts.get(id) ?? 0) + 1);
     if (card.kind === 'invocacao') invocacoes += 1;
     if (card.requiredLevel > playerLevel) {
-      errors.push(`${card.name} exige nível ${card.requiredLevel}.`);
+      errors.push(t('errNeedsLevel', { name: cardName(card), n: card.requiredLevel }));
     }
   }
-  if (invocacoes > MAX_INVOCACOES) errors.push('O deck pode ter só 1 invocação.');
+  if (invocacoes > MAX_INVOCACOES) errors.push(t('errOneSummon'));
   for (const [id, n] of counts) {
-    if (n > MAX_COPIES) errors.push(`No máximo ${MAX_COPIES} cópias de ${getCard(id).name}.`);
+    if (n > MAX_COPIES) errors.push(t('errMaxCopies', { n: MAX_COPIES, name: cardName(id) }));
   }
   return [...new Set(errors)];
 }
 
 export function validateParty(speciesIds: readonly string[], playerLevel: number): string[] {
   const errors: string[] = [];
-  if (speciesIds.length === 0) errors.push('Escolha pelo menos 1 pet.');
-  if (speciesIds.length > MAX_PARTY) errors.push(`A equipe tem no máximo ${MAX_PARTY} pets.`);
-  if (new Set(speciesIds).size !== speciesIds.length) errors.push('Não repita espécies na equipe.');
+  if (speciesIds.length === 0) errors.push(t('errNoPet'));
+  if (speciesIds.length > MAX_PARTY) errors.push(t('errPartyMax', { n: MAX_PARTY }));
+  if (new Set(speciesIds).size !== speciesIds.length) errors.push(t('errRepeatSpecies'));
   for (const id of speciesIds) {
     const s = getSpecies(id);
     if (s.requiredLevel > playerLevel)
-      errors.push(`${s.stages[0].name} exige nível ${s.requiredLevel}.`);
+      errors.push(t('errNeedsLevel', { name: stageName(s, 0), n: s.requiredLevel }));
   }
   return errors;
 }

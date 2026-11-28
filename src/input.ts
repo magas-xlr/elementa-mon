@@ -1,7 +1,12 @@
 /**
- * Keyboard + gamepad mapped to a few abstract actions (Steam Deck / controllers friendly).
+ * Keyboard + Universal Gamepad input (PlayStation, Nintendo Switch, Xbox & Generic USB/Bluetooth controllers!).
+ * Supports Standard Gamepad mapping, Nintendo A/B layout detection, shoulder-bumper tab cycling,
+ * and fallback D-pad / hat-axis decoding for generic controllers.
  */
-export type Action = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'cancel' | 'menu';
+export type Action =
+  'up' | 'down' | 'left' | 'right' | 'confirm' | 'cancel' | 'menu' | 'tabPrev' | 'tabNext';
+
+export type ControllerBrand = 'PlayStation' | 'Switch' | 'Xbox' | 'Controle' | null;
 
 const KEYMAP: Record<string, Action> = {
   ArrowUp: 'up',
@@ -20,33 +25,38 @@ const KEYMAP: Record<string, Action> = {
   KeyX: 'cancel',
   Tab: 'menu',
   KeyM: 'menu',
+  KeyQ: 'tabPrev',
+  KeyE: 'tabNext',
 };
 
-// Standard gamepad layout: 0 = A, 1 = B, 9 = Start, 12-15 = D-pad.
-const PAD_BUTTONS: [number, Action][] = [
-  [0, 'confirm'],
-  [1, 'cancel'],
-  [9, 'menu'],
-  [3, 'menu'],
-  [12, 'up'],
-  [13, 'down'],
-  [14, 'left'],
-  [15, 'right'],
-];
+function detectBrand(id: string): ControllerBrand {
+  const s = id.toLowerCase();
+  if (
+    s.includes('dualsense') ||
+    s.includes('dualshock') ||
+    s.includes('playstation') ||
+    s.includes('054c')
+  )
+    return 'PlayStation';
+  if (s.includes('nintendo') || s.includes('switch') || s.includes('joy-con') || s.includes('057e'))
+    return 'Switch';
+  if (s.includes('xbox') || s.includes('xinput') || s.includes('045e')) return 'Xbox';
+  return 'Controle';
+}
 
 class Input {
   private held = new Set<Action>();
   private padHeld = new Set<Action>();
   private listeners = new Set<(a: Action) => void>();
+  private padListeners = new Set<(brand: ControllerBrand) => void>();
   private repeatTimer = 0;
-  /** A quick tap still moves one tile even if the key is released before the next frame. */
   private tapped: Action | null = null;
+  connectedBrand: ControllerBrand = null;
 
   constructor() {
     window.addEventListener('keydown', (e) => {
       const action = KEYMAP[e.code];
       if (!action) return;
-      // Let text fields and range sliders keep their own keys.
       const el = e.target as HTMLElement | null;
       if (
         el &&
@@ -68,11 +78,25 @@ class Input {
       if (action) this.held.delete(action);
     });
     window.addEventListener('blur', () => this.held.clear());
+    window.addEventListener('gamepadconnected', (e) => {
+      this.connectedBrand = detectBrand(e.gamepad.id);
+      for (const fn of this.padListeners) fn(this.connectedBrand);
+    });
+    window.addEventListener('gamepaddisconnected', () => {
+      const pads = (navigator.getGamepads?.() ?? []).filter(Boolean);
+      this.connectedBrand = pads[0] ? detectBrand(pads[0].id) : null;
+      for (const fn of this.padListeners) fn(this.connectedBrand);
+    });
   }
 
   on(fn: (a: Action) => void): () => void {
     this.listeners.add(fn);
     return () => this.listeners.delete(fn);
+  }
+
+  onGamepadChange(fn: (brand: ControllerBrand) => void): () => void {
+    this.padListeners.add(fn);
+    return () => this.padListeners.delete(fn);
   }
 
   private emit(a: Action): void {
@@ -83,7 +107,7 @@ class Input {
     return this.held.has(a) || this.padHeld.has(a);
   }
 
-  /** Current movement direction from keys, D-pad or left stick. */
+  /** Current movement direction from keys, D-pad or left analog stick. */
   direction(): { dx: number; dy: number } | null {
     const tap = this.tapped;
     this.tapped = null;
@@ -98,24 +122,57 @@ class Input {
     return null;
   }
 
-  /** Polls gamepads once per frame and emits edge-triggered actions (with menu repeat). */
+  /** Polls PlayStation, Switch, Xbox & Generic gamepads once per frame with menu auto-repeat. */
   poll(dt: number): void {
     const pads = navigator.getGamepads?.() ?? [];
     const now = new Set<Action>();
     for (const pad of pads) {
-      if (!pad) continue;
-      for (const [i, a] of PAD_BUTTONS) if (pad.buttons[i]?.pressed) now.add(a);
-      const [x = 0, y = 0] = pad.axes;
-      if (y < -0.5) now.add('up');
-      if (y > 0.5) now.add('down');
-      if (x < -0.5) now.add('left');
-      if (x > 0.5) now.add('right');
+      if (!pad || !pad.connected) continue;
+      if (!this.connectedBrand) {
+        this.connectedBrand = detectBrand(pad.id);
+        for (const fn of this.padListeners) fn(this.connectedBrand);
+      }
+      const isSwitch = this.connectedBrand === 'Switch';
+      const btn = (i: number) =>
+        Boolean(pad.buttons[i]?.pressed || (pad.buttons[i]?.value ?? 0) > 0.5);
+
+      // Confirm / Cancel (Nintendo Switch swaps A=right / B=bottom; PS/Xbox/Generic use bottom=confirm, right=cancel)
+      if (btn(isSwitch ? 1 : 0)) now.add('confirm');
+      if (btn(isSwitch ? 0 : 1)) now.add('cancel');
+      if (btn(2) || btn(3) || btn(8) || btn(9)) now.add('menu');
+      if (btn(4) || btn(6)) now.add('tabPrev');
+      if (btn(5) || btn(7)) now.add('tabNext');
+
+      // Standard D-Pad buttons (12..15)
+      if (btn(12)) now.add('up');
+      if (btn(13)) now.add('down');
+      if (btn(14)) now.add('left');
+      if (btn(15)) now.add('right');
+
+      // Left stick (axes 0, 1) with deadzone 0.42
+      const ax = pad.axes[0] ?? 0;
+      const ay = pad.axes[1] ?? 0;
+      if (ay < -0.42) now.add('up');
+      if (ay > 0.42) now.add('down');
+      if (ax < -0.42) now.add('left');
+      if (ax > 0.42) now.add('right');
+
+      // Generic non-standard gamepad fallback D-pad axes (axes 6, 7)
+      if (pad.mapping !== 'standard' && pad.axes.length >= 8) {
+        const dx = pad.axes[6] ?? 0;
+        const dy = pad.axes[7] ?? 0;
+        if (dy < -0.5) now.add('up');
+        if (dy > 0.5) now.add('down');
+        if (dx < -0.5) now.add('left');
+        if (dx > 0.5) now.add('right');
+      }
     }
+
     let anyDir = false;
     for (const a of now) {
       if (!this.padHeld.has(a)) {
         this.emit(a);
-        this.repeatTimer = 0.35;
+        this.repeatTimer = 0.34;
       }
       if (a === 'up' || a === 'down' || a === 'left' || a === 'right') anyDir = true;
     }

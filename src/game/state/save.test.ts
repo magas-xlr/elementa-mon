@@ -32,4 +32,14 @@ describe('save', () => {
     expect(loaded.playerXp).toBe(33);
     expect(loaded.settings.fpsCap).toBe(60);
   });
+
+  it('toda aventura começa só com o Caputino, mesmo em saves antigos', () => {
+    expect(defaultSave().party).toEqual(['orelhito']);
+    const store = memory();
+    store.setItem(
+      SAVE_KEY,
+      JSON.stringify({ ...defaultSave(), party: ['pipo', 'casquinho', 'bicudo'] })
+    );
+    expect(loadSave(store).party).toEqual(['orelhito']);
+  });
 });

@@ -1,3 +1,5 @@
+import { elementName, t } from '../../i18n';
+
 export const ELEMENTS = [
   'fogo',
   'agua',
@@ -30,6 +32,8 @@ export const ELEMENT_INFO: Record<Element, ElementInfo> = {
   fantasma: { name: 'Fantasma', icon: '👻', color: 0x6a5acd },
   fada: { name: 'Fada', icon: '🧚', color: 0xf5a3d0 },
 };
+
+export const elementLabel = (e: Element): string => elementName(e) ?? ELEMENT_INFO[e].name;
 
 /**
  * Damage percentage of an attack of the row element against a defender of the column element.
@@ -66,4 +70,26 @@ export function weakAgainst(defender: Element): Element[] {
   return ELEMENTS.filter((e) => elementMultiplier(e, defender) > 1).sort(
     (a, b) => elementMultiplier(b, defender) - elementMultiplier(a, defender)
   );
+}
+
+/** A pet is neutral until an element crystal transforms it, or radioactive from nuclear exposure. */
+export type PetElement = Element | 'neutro' | 'radioativo';
+
+export const NEUTRAL_INFO: ElementInfo = { name: 'Neutro', icon: '✦', color: 0xc9bfae };
+export const RADIOACTIVE_INFO: ElementInfo = { name: 'Radioativo', icon: '☢️', color: 0x76ff03 };
+
+export const petElementInfo = (e: PetElement): ElementInfo =>
+  e === 'neutro' ? NEUTRAL_INFO : e === 'radioativo' ? RADIOACTIVE_INFO : ELEMENT_INFO[e];
+
+export const petElementLabel = (e: PetElement): string =>
+  e === 'neutro' ? t('neutral') : e === 'radioativo' ? 'Radioativo' : elementLabel(e);
+
+/** Like elementMultiplier, but neutral and radioactive fighters are always 100%. */
+export function petMultiplier(attacker: PetElement, defender: PetElement): number {
+  return attacker === 'neutro' ||
+    defender === 'neutro' ||
+    attacker === 'radioativo' ||
+    defender === 'radioativo'
+    ? 1
+    : elementMultiplier(attacker, defender);
 }

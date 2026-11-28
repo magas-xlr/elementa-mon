@@ -1,4 +1,7 @@
-import { getSpecies, type Species } from '../data/species';
+import { colorName } from '../../i18n';
+import type { PetElement } from '../data/elements';
+import { GENE_TRAITS } from '../data/biodiversity';
+import { getSpecies, stageName, type Species } from '../data/species';
 
 export const MAX_PET_LEVEL = 3;
 export const BASE_PET_HP = 10;
@@ -9,7 +12,7 @@ export const MAX_PLAYER_LEVEL = 10;
 /** Total XP needed to reach each player level (index = level). */
 export const PLAYER_XP_TO_LEVEL = [0, 0, 10, 25, 45, 70, 100, 140, 190, 250, 320] as const;
 
-export const XP_REWARD = { selvagem: 3, treinador: 5, chefe: 15, andar: 5 } as const;
+export const XP_REWARD = { selvagem: 3, treinador: 5, chefe: 15, bioma: 5 } as const;
 
 /** A pet owned during a run. Pets always start a run at level 1 with 10 HP (permadeath). */
 export interface PetInstance {
@@ -18,6 +21,41 @@ export interface PetInstance {
   level: number;
   xp: number;
   hp: number;
+  /** Neutral until an element crystal is used on it; a new crystal swaps the element. */
+  element: PetElement;
+  /** Daily hunger (0..100). If it reaches 0, the pet starves permanently! */
+  hunger?: number;
+  /** Happiness & obedience (0..100). Low = disobeys; high (>=80) = +1 ATK/+1 DEF! */
+  happiness?: number;
+  /** Beauty score (0..100). Higher beauty makes NPCs admire you and go easier in battle! */
+  beauty?: number;
+  /** Equipped cosmetic outfit icon from the Boutique (e.g. 🎀, 🎩, 👑). */
+  outfit?: string;
+  /** Sick from a Lab accident: loses HP every game hour until healed at Hospital (or dies!). */
+  sick?: boolean;
+  /** Lab mishap mutation tag ('mutante', 'geleca', 'zumbi', or fossil 'esqueleto'). */
+  mutation?: 'mutante' | 'geleca' | 'zumbi' | 'esqueleto';
+  /** Developed depression after donating half HP in Lab Equivalent Exchange: HP halves every in-game day! */
+  depressed?: boolean;
+  /** Hallucinating from toxic/forbidden substances: ignores commands and may die suddenly out of nowhere! */
+  hallucinating?: boolean;
+  /** Temporary happiness boost from eating junk food ("besteira"): wears off after a few hours! */
+  junkBoost?: number;
+  junkBoostHours?: number;
+  /** Pollen cycle stacks in battle (>=3 turns pet permanently into a Plant pet!). */
+  pollenCount?: number;
+  plantForm?: boolean;
+  /** Cursed by the Cemetery Witch ritual: randomly swaps battle species/element moveset every battle! */
+  cursed?: boolean;
+  /** Unique genetic biodiversity trait (from 12 ecological traits). */
+  geneTrait?: string;
+  /** Accumulated nuclear radiation exposure (0..100+); at 100 the pet mutates into `radioativo`! */
+  nuclearExposure?: number;
+  /** Permanent HP/ATK/DEF/AGI modifiers from Dojo martial arts training & Lab accidents. */
+  hpMod?: number;
+  atkMod?: number;
+  defMod?: number;
+  agiMod?: number;
 }
 
 export interface PetStats {
@@ -46,7 +84,7 @@ export function stageOf(level: number): 0 | 1 | 2 {
 export function statsFor(species: Species, level: number, bonus: StatBonus = {}): PetStats {
   const stage = stageOf(level);
   return {
-    name: species.stages[stage].name,
+    name: stageName(species, stage),
     maxHp: BASE_PET_HP + stage * 5,
     attack: species.attack + stage + (bonus.attack ?? 0),
     defense: species.defense + stage + (bonus.defense ?? 0),
@@ -54,18 +92,37 @@ export function statsFor(species: Species, level: number, bonus: StatBonus = {})
 }
 
 export function petStats(pet: PetInstance, bonus: StatBonus = {}): PetStats {
-  return statsFor(getSpecies(pet.speciesId), pet.level, bonus);
+  const base = statsFor(getSpecies(pet.speciesId), pet.level, {
+    attack: (bonus.attack ?? 0) + (pet.atkMod ?? 0),
+    defense: (bonus.defense ?? 0) + (pet.defMod ?? 0),
+  });
+  return {
+    ...base,
+    maxHp: Math.max(4, base.maxHp + (pet.hpMod ?? 0)),
+    attack: Math.max(1, base.attack),
+    defense: Math.max(0, base.defense),
+  };
 }
 
-export function createPet(speciesId: string, level = 1): PetInstance {
+export function createPet(
+  speciesId: string,
+  level = 1,
+  element: PetElement = 'neutro'
+): PetInstance {
   const species = getSpecies(speciesId);
   const lvl = Math.min(MAX_PET_LEVEL, Math.max(1, level));
+  const trait = GENE_TRAITS[(uidCounter + speciesId.length) % GENE_TRAITS.length].id;
   return {
     uid: newUid(),
     speciesId,
     level: lvl,
     xp: PET_XP_TO_LEVEL[lvl],
     hp: statsFor(species, lvl).maxHp,
+    element,
+    hunger: 100,
+    happiness: 72,
+    beauty: 20,
+    geneTrait: trait,
   };
 }
 
@@ -122,3 +179,6 @@ export const AVATAR_COLORS: readonly { color: number; name: string; level: numbe
   { color: 0xf4f4f4, name: 'Branco', level: 8 },
   { color: 0xffc0e0, name: 'Rosa Lendário', level: 10 },
 ];
+
+export const avatarColorName = (index: number): string =>
+  colorName(index) ?? AVATAR_COLORS[index].name;

@@ -1,5 +1,7 @@
+import { detectLang, isLang, type Lang } from '../../i18n';
 import { STARTER_DECK } from '../data/cards';
-import { playerLevelFor } from '../rules/progression';
+import { STARTER_SPECIES, isStarter } from '../data/species';
+import { playerLevelFor, type PetInstance } from '../rules/progression';
 
 export type Resolution = 'baixa' | 'media' | 'alta';
 
@@ -10,6 +12,10 @@ export interface Settings {
   resolution: Resolution;
   fpsCap: 30 | 60;
   fullscreen: boolean;
+  /** HD-2D post effects (tilt-shift, bloom, grade, vignette). */
+  postFx: boolean;
+  /** Interface language; the first launch follows the browser/OS language. */
+  lang: Lang;
 }
 
 export interface SaveData {
@@ -20,7 +26,23 @@ export interface SaveData {
   party: string[];
   deck: string[];
   tutorialSeen: boolean;
-  stats: { runs: number; victories: number; battlesWon: number; bestFloor: number };
+  /** `biomesFound`: most biomes discovered in a single run. */
+  stats: { runs: number; victories: number; battlesWon: number; biomesFound: number };
+  /** Discovered secrets (undiscovered pets, cards & biomes stay hidden as ???). */
+  discoveredSpecies?: string[];
+  discoveredCards?: string[];
+  discoveredBiomes?: number[];
+  /** NPC relationship bond scores (negative = rival, 3+ = friendship, 5+ = romance). */
+  npcBonds?: Record<string, number>;
+  /** Total main bosses defeated across runs (8 unlocks the Secret 64 Talking Monsters Cyberpunk Sewer!). */
+  bossesDefeated?: number;
+  /** Roguelike Prison Game Over carryover: keeps collected pets & items when restarting after arrest! */
+  prisonCarryover?: {
+    pets: PetInstance[];
+    relics: string[];
+    jobItems: Record<string, number>;
+    potions: number;
+  } | null;
   settings: Settings;
 }
 
@@ -31,11 +53,22 @@ export function defaultSave(): SaveData {
     version: 1,
     playerXp: 0,
     avatar: { body: 0xd94a4a, hat: 0x3a6fd9 },
-    party: ['fagulho', 'gotelo', 'faiscar'],
+    party: [...STARTER_SPECIES],
     deck: [...STARTER_DECK],
     tutorialSeen: false,
-    stats: { runs: 0, victories: 0, battlesWon: 0, bestFloor: 0 },
-    settings: { volume: 0.6, music: true, resolution: 'baixa', fpsCap: 60, fullscreen: false },
+    stats: { runs: 0, victories: 0, battlesWon: 0, biomesFound: 0 },
+    discoveredSpecies: [...STARTER_SPECIES],
+    discoveredCards: [...new Set(STARTER_DECK)],
+    discoveredBiomes: [0],
+    settings: {
+      volume: 0.6,
+      music: true,
+      resolution: 'alta',
+      fpsCap: 60,
+      fullscreen: false,
+      postFx: true,
+      lang: detectLang(),
+    },
   };
 }
 
@@ -63,8 +96,14 @@ export function loadSave(store: KeyValueStorage | null = storage()): SaveData {
       ...base,
       ...data,
       avatar: { ...base.avatar, ...data.avatar },
+      // Every adventure starts with the starter pet only (older saves had a free pick).
+      party: data.party?.filter(isStarter).length ? data.party.filter(isStarter) : base.party,
       stats: { ...base.stats, ...data.stats },
-      settings: { ...base.settings, ...data.settings },
+      settings: {
+        ...base.settings,
+        ...data.settings,
+        lang: isLang(data.settings?.lang) ? data.settings.lang : base.settings.lang,
+      },
     };
   } catch {
     return base;
