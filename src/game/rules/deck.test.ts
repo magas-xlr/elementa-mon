@@ -26,10 +26,12 @@ describe('deck', () => {
     expect(canAddCard(['golem'], 'brasa', 1)).toBe(true);
   });
 
-  it('valida a equipe de até 3 pets', () => {
-    expect(validateParty(['fagulho', 'gotelo', 'faiscar'], 1)).toEqual([]);
-    expect(validateParty(['fagulho', 'gotelo', 'faiscar', 'torrao'], 5).length).toBeGreaterThan(0);
-    expect(validateParty(['vultinho'], 1).join()).toContain('nível 4');
-    expect(validateParty(['fagulho', 'fagulho'], 1).join()).toContain('repita');
+  it('valida a equipe de até 4 pets', () => {
+    expect(validateParty(['pipo', 'casquinho', 'bicudo', 'pulinho'], 5)).toEqual([]);
+    expect(
+      validateParty(['pipo', 'casquinho', 'bicudo', 'pulinho', 'orelhito'], 5).length
+    ).toBeGreaterThan(0);
+    expect(validateParty(['penugem'], 1).join()).toContain('nível 4');
+    expect(validateParty(['pipo', 'pipo'], 1).join()).toContain('repita');
   });
 });

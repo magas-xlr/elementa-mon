@@ -3,20 +3,20 @@ import { createPet, gainPetXp, petStats, playerLevelFor, playerLevelProgress } f
 
 describe('progressão', () => {
   it('pets começam no nível 1 com 10 de vida', () => {
-    const pet = createPet('fagulho');
+    const pet = createPet('pipo');
     expect(pet.level).toBe(1);
     expect(pet.hp).toBe(10);
-    expect(petStats(pet).name).toBe('Fagulho');
+    expect(petStats(pet).name).toBe('Pipo');
   });
 
   it('evolui no nível 2 e para no nível 3', () => {
-    const pet = createPet('fagulho');
-    expect(gainPetXp(pet, 2)).toEqual({ leveledUp: true, evolvedTo: 'Labaréu' });
+    const pet = createPet('pipo');
+    expect(gainPetXp(pet, 2)).toEqual({ leveledUp: true, evolvedTo: 'Pipão' });
     expect(petStats(pet).maxHp).toBe(15);
     expect(pet.hp).toBe(15);
     gainPetXp(pet, 100);
     expect(pet.level).toBe(3);
-    expect(petStats(pet).name).toBe('Vulcandro');
+    expect(petStats(pet).name).toBe('Pipaltar');
     expect(gainPetXp(pet, 5).leveledUp).toBe(false);
   });
 

@@ -1,3 +1,5 @@
+import { relicText } from '../../i18n';
+
 export interface RelicDef {
   id: string;
   name: string;
@@ -40,3 +42,7 @@ export function getRelic(id: string): RelicDef {
   if (!r) throw new Error(`Relíquia desconhecida: ${id}`);
   return r;
 }
+
+export const relicName = (id: string): string => relicText(id)?.[0] ?? getRelic(id).name;
+export const relicDescription = (id: string): string =>
+  relicText(id)?.[1] ?? getRelic(id).description;
